@@ -1,0 +1,45 @@
+# TODO orga propre
+
+xp_name: 'perch_raw${audio_params.dur}'
+
+pathing:
+  data_path: '../../data/BlueFinLibrary/raw/'
+  encoder_path : '../../models/bird-vocalization-classifier/'
+  subsamp_annotation_file: 'subsamp_dur${audio_params.dur}_ovlp${audio_params.ovlp}_trs${audio_params.trs}.csv'
+  full_annotation_file: 'results_dur${audio_params.dur}_ovlp${audio_params.ovlp}_trs${audio_params.trs}.csv'
+
+perch_params:
+    input_size: 160000
+    output_size: 1280
+
+audio_params:
+  dur: 15
+  ovlp: 12.5
+  trs: 0.5
+  sr: ${perch_params.input_size} / ${audio_params.dur}
+
+train_params:
+  labels: ['abz', 'dcall', 'bp']
+  lr: 1e-4
+  batch_size: 32
+  train_val_ratio: [0.8, 0.2]
+
+pl_trainer_params:
+  n_epochs: 10
+
+load_data_params:
+  dur: ${audio_params.dur}
+  sr: ${audio_params.sr}
+  labels: ${train_params.labels}
+
+# --- To disable automatic outputs save ---
+defaults:
+  - _self_
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: disabled
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+# ------
